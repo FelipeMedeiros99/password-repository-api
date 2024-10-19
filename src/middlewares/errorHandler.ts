@@ -7,7 +7,7 @@ interface Error {
 
 export async function errorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
     try {
-        res.send(err.message).status(err.status);
+        res.status(err.status).send(err.message);
     }catch(e){
         console.log(e);
         res.send("Internal server error").status(500)
