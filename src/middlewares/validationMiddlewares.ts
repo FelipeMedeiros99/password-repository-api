@@ -5,9 +5,12 @@ import { ObjectSchema } from "joi";
 export function schemaValidation(schema: ObjectSchema) {
     return (req:Request, res: Response, next:NextFunction)=>{
         const {body: registerData } = req;
-        const { error, value } = schema.validate(registerData)
+        const { error } = schema.validate(registerData, {abortEarly:false})
+
         if(error){
-            throw {message: "invalid format", status: 404}
+            console.log(error)
+            throw {message: error.message, status: 404}
         }
+        next()
     }
 }
