@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import { registerUserService } from "../services/userServices";
+import { loginUserService, registerUserService } from "../services/userServices";
 import { UserDataReceived } from "../types/userTypes";
 
 export async function registerController(req: Request, res: Response, next: NextFunction) {
-    const userData:UserDataReceived  = req.body;
+    const userData: UserDataReceived = req.body;
     try {
-        
+
         await registerUserService(userData)
         res.sendStatus(201);
 
@@ -15,10 +15,12 @@ export async function registerController(req: Request, res: Response, next: Next
 }
 
 
-export async function loginController(req: Request, res: Response, next: NextFunction){
-    try{
-        res.send(200)
-    }catch(e){
+export async function loginController(req: Request, res: Response, next: NextFunction) {
+    const userData: UserDataReceived = req.body;
+    try {
+        await loginUserService(userData)
+        res.sendStatus(200)
+    } catch (e) {
         next(e)
     }
 }

@@ -1,4 +1,4 @@
-import { Router} from "express";
+import { Router } from "express";
 import { schemaValidation } from "../middlewares/validationMiddlewares";
 import { loginUserSchema, registerUserSchema } from "../schemas/userSchemas";
 import { loginController, registerController } from "../controllers/userController";
