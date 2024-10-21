@@ -1,10 +1,10 @@
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 
-import { createUserRepository, findUserReposytory } from "../repositories/userRepository";
+import { createUserRepository, findUserReposytory, saveTokenRepository } from "../repositories/userRepository";
 import { conflitErrorService, ValidationDatasService } from "./validationsService";
-import { UserDataReceived } from "../types/userTypes";
-import { User } from "@prisma/client";
+import { SaveToken, UserDataReceived } from "../types/userTypes";
+import { Token, User } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import { MessageError } from "../types/errorTypes";
 
@@ -51,5 +51,12 @@ export async function loginUserService(userData: UserDataReceived) {
 
     await ValidationDatasService(userDatabase, userData)
 
-    createToken(userDatabase as User)
+    const token = await createToken(userDatabase as User)
+
+    const userDataToken: SaveToken = {
+        token: token,
+        userId: userDatabase!.id,
+        expiration: new Date(Date.now() + 15 * 60 * 1000)
+    }
+    await saveTokenRepository(userDataToken)
 }
