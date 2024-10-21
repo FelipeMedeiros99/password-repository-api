@@ -13,3 +13,12 @@ export async function registerController(req: Request, res: Response, next: Next
         next(e)
     }
 }
+
+
+export async function loginController(req: Request, res: Response, next: NextFunction){
+    try{
+        res.send(200)
+    }catch(e){
+        next(e)
+    }
+}
