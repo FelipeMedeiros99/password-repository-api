@@ -1,28 +1,32 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { schemaValidation } from "../middlewares/validationMiddlewares";
 import { registerUserSchema } from "../schemas/userSchemas";
 import { createUserRepository, findUserReposytory } from "../repositories/userRepository";
-import { conflitError } from "../services/customErros";
+import { conflitErrorService } from "../services/customErrosService";
 import { encryptPasswordService } from "../services/userServices";
 
 
 
 const userRouter = Router();
 
-userRouter.post("/register", schemaValidation(registerUserSchema), async (req: Request, res: Response)=>{
-    const {body: userData} = req;
+userRouter.post("/register", schemaValidation(registerUserSchema), async (req: Request, res: Response, next: NextFunction) => {
+    const { body: userData } = req;
+    try{
 
-    const userExist = await findUserReposytory(userData);
-
-    conflitError(Boolean(userExist));
+        const userExistAtDatabase = await findUserReposytory(userData);
         
-    const encryptedPassword = await encryptPasswordService(userData.password)
-    
-    delete userData.passwordConfirmation
+        conflitErrorService(userExistAtDatabase);
+        
+        const encryptedPassword = await encryptPasswordService(userData.password)
+        
+        delete userData.passwordConfirmation
+        
+        await createUserRepository({ ...userData, password: encryptedPassword });
+        res.sendStatus(201);
+    }catch(e){
+        next(e)
+    }
 
-    await createUserRepository({...userData, password: encryptedPassword});
-
-    res.sendStatus(201);
 })
 
 export default userRouter;
