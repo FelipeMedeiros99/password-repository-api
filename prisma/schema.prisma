@@ -88,9 +88,12 @@ model Wifi {
 }
 
 model Token {
-  id     Int  @id @default(autoincrement())
+  id     Int    @id @default(autoincrement())
   userId Int
-  user   User @relation(fields: [userId], references: [id])
+  token  String
+  createdAt DateTime @default(now())
+  expiration DateTime 
+  user   User   @relation(fields: [userId], references: [id])
 
   @@map("token")
 }
