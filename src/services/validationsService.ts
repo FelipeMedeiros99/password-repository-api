@@ -24,6 +24,4 @@ export async function ValidationDatasService(userDatabase: User | null, userData
         const messageError: MessageError = { message: "Email and password don't match", status: 401 }
         throw messageError
     }
-
-
 }
