@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 
 import { createUserRepository, findUserReposytory } from "../repositories/userRepository";
-import { conflitErrorService } from "./validationsService";
+import { conflitErrorService, ValidationDatasService } from "./validationsService";
 import { UserDataReceived } from "../types/userTypes";
 
 
@@ -31,7 +31,6 @@ export async function registerUserService(userData: UserDataReceived) {
 
 export async function loginUserService(userData: UserDataReceived) {
     const userDatabase = await findUserReposytory(userData);
-    
-    console.log(userDatabase)
+    await ValidationDatasService(userDatabase, userData)
 
 }
