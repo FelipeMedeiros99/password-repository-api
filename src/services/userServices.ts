@@ -49,14 +49,16 @@ export async function registerUserService(userData: UserDataReceived) {
 export async function loginUserService(userData: UserDataReceived) {
     const userDatabase = await findUserReposytory(userData);
 
-    await ValidationDatasService(userDatabase, userData)
+    await ValidationDatasService(userDatabase, userData);
 
-    const token = await createToken(userDatabase as User)
+    const token = await createToken(userDatabase as User);
 
     const userDataToken: SaveToken = {
         token: token,
         userId: userDatabase!.id,
         expiration: new Date(Date.now() + 15 * 60 * 1000)
-    }
-    await saveTokenRepository(userDataToken)
+    };
+    await saveTokenRepository(userDataToken);
+
+    return token;
 }

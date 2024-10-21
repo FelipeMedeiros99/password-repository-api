@@ -18,8 +18,8 @@ export async function registerController(req: Request, res: Response, next: Next
 export async function loginController(req: Request, res: Response, next: NextFunction) {
     const userData: UserDataReceived = req.body;
     try {
-        await loginUserService(userData)
-        res.sendStatus(200)
+        const token = await loginUserService(userData)
+        res.status(200).send(token)
     } catch (e) {
         next(e)
     }
