@@ -23,6 +23,7 @@ model User {
   securityNotes SecurityNotes[]
   cards         Cards[]
   wifi          Wifi[]
+  token         Token[]
 
   @@map("user")
 }
@@ -84,4 +85,12 @@ model Wifi {
   user User @relation(fields: [userId], references: [id])
 
   @@map("wifi")
+}
+
+model Token {
+  id     Int  @id @default(autoincrement())
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  @@map("token")
 }

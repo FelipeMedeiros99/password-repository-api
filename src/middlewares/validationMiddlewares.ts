@@ -8,7 +8,6 @@ export function schemaValidation(schema: ObjectSchema) {
         const { error } = schema.validate(registerData, {abortEarly:false})
 
         if(error){
-            console.log(error)
             throw {message: error.message, status: 404}
         }
         next()
