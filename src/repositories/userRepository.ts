@@ -13,3 +13,11 @@ export async function createUserRepository(userData: UserDataReceived) {
 export async function saveTokenRepository(userDataToken: SaveToken) {
     await prisma.token.create({ data: userDataToken })
 }
+
+export async function deleteExpiredTokens() {
+    await prisma.token.deleteMany({
+        where: { expiration: {
+            lt: new Date()
+        }}
+    })
+}
