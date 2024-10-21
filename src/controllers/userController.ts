@@ -1,23 +1,15 @@
 import { Request, Response, NextFunction } from "express";
-import { createUserRepository, findUserReposytory } from "../repositories/userRepository";
-import { conflitErrorService } from "../services/customErrosService";
-import { encryptPasswordService } from "../services/userServices";
+import { registerUserService } from "../services/userServices";
+import { UserDataReceived } from "../types/userTypes";
 
-export async function registerController(req: Request, res: Response, next: NextFunction){
-    const { body: userData } = req;
-    try{
-
-        const userExistAtDatabase = await findUserReposytory(userData);
+export async function registerController(req: Request, res: Response, next: NextFunction) {
+    const userData:UserDataReceived  = req.body;
+    try {
         
-        conflitErrorService(userExistAtDatabase);
-        
-        const encryptedPassword = await encryptPasswordService(userData.password)
-        
-        delete userData.passwordConfirmation
-        
-        await createUserRepository({ ...userData, password: encryptedPassword });
+        await registerUserService(userData)
         res.sendStatus(201);
-    }catch(e){
+
+    } catch (e) {
         next(e)
     }
 }

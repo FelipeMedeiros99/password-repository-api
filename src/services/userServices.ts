@@ -1,6 +1,11 @@
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 
+import { createUserRepository, findUserReposytory } from "../repositories/userRepository";
+import { conflitErrorService } from "../services/customErrosService";
+import { UserDataReceived } from "../types/userTypes";
+
+
 dotenv.config()
 
 export async function encryptPasswordService(password:string){
@@ -10,4 +15,17 @@ export async function encryptPasswordService(password:string){
 
     return encryptedPassword;
 
+}
+
+
+export async function registerUserService(userData:UserDataReceived){
+    const userExistAtDatabase = await findUserReposytory(userData);
+
+    conflitErrorService(userExistAtDatabase);
+
+    const encryptedPassword = await encryptPasswordService(userData.password)
+
+    delete userData.passwordConfirmation
+
+    await createUserRepository({ ...userData, password: encryptedPassword });
 }
