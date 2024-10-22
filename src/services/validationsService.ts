@@ -13,15 +13,23 @@ export function conflitErrorService(validation: User | null) {
 }
 
 
-export async function ValidationDatasService(userDatabase: User | null, userData: UserDataReceived) {
+export async function validationDatasService(userDatabase: User | null, userData: UserDataReceived) {
     if (!userDatabase) {
         const messageError: MessageError = { message: "Email not found", status: 404 };
         throw messageError;
     }
 
     const passwordIsCorrect = await bcrypt.compare(userData.password, userDatabase.password)
-    if(!passwordIsCorrect){
+    if (!passwordIsCorrect) {
         const messageError: MessageError = { message: "Email and password don't match", status: 401 }
         throw messageError
+    }
+}
+
+
+export function validBearerIsInTheTokenService(token: string | undefined) {
+    if (!token) {
+        const messageError: MessageError = { message: "Invalid token", status: 404 }
+        throw messageError;
     }
 }
