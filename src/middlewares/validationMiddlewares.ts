@@ -17,10 +17,12 @@ export function schemaValidation(schema: ObjectSchema) {
 
 export async function validTokenMiddleware(req: Request, res: Response, next: NextFunction) {
     const { authorization: token } = req.headers;
+    console.log(token)
 
     try {
         validBearerIsInTheTokenService(token)
         await validTokenExistInDatabase(token as string)
+        next()
 
     } catch (e) {
         next(e)
