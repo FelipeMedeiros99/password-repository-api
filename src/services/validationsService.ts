@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { User } from "@prisma/client";
 import { UserDataReceived } from "../types/userTypes";
 import { MessageError } from "../types/errorTypes";
+import { findTokenInDatabase } from "../repositories/storeRepository";
 
 
 export function conflitErrorService(validation: User | null) {
@@ -32,4 +33,17 @@ export function validBearerIsInTheTokenService(token: string | undefined) {
         const messageError: MessageError = { message: "Invalid token", status: 404 }
         throw messageError;
     }
+    if (!token.includes("Bearer ")) {
+        const messageError: MessageError = { message: 'Token must be "Bearer token"', status: 404 }
+        throw messageError;
+    }
+}
+
+export async function validTokenExistInDatabase(token: string) {
+    const tokenInDatabase = await findTokenInDatabase(token);
+    if (!tokenInDatabase) {
+        const messageError: MessageError = { message: "The token has expired", status: 404 }
+        throw messageError;
+    }
+
 }

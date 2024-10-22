@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 
 import { createUserRepository, findUserReposytory, saveTokenRepository } from "../repositories/userRepository";
-import { conflitErrorService, ValidationDatasService } from "./validationsService";
+import { conflitErrorService, validationDatasService } from "./validationsService";
 import { SaveToken, UserDataReceived } from "../types/userTypes";
 import { Token, User } from "@prisma/client";
 import jwt from "jsonwebtoken";
@@ -49,7 +49,7 @@ export async function registerUserService(userData: UserDataReceived) {
 export async function loginUserService(userData: UserDataReceived) {
     const userDatabase = await findUserReposytory(userData);
 
-    await ValidationDatasService(userDatabase, userData);
+    await validationDatasService(userDatabase, userData);
 
     const token = await createToken(userDatabase as User);
 

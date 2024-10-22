@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ObjectSchema } from "joi";
-import { validBearerIsInTheTokenService } from "../services/validationsService";
+import { validBearerIsInTheTokenService, validTokenExistInDatabase } from "../services/validationsService";
 
 
 export function schemaValidation(schema: ObjectSchema) {
@@ -16,11 +16,13 @@ export function schemaValidation(schema: ObjectSchema) {
 }
 
 export async function validTokenMiddleware(req: Request, res: Response, next: NextFunction) {
-    const {authorization: token} = req.headers;
+    const { authorization: token } = req.headers;
 
-    try{
+    try {
         validBearerIsInTheTokenService(token)
-    }catch(e){
+        await validTokenExistInDatabase(token as string)
+
+    } catch (e) {
         next(e)
     }
 
