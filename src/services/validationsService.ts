@@ -13,7 +13,6 @@ export function conflitErrorService(validation: User | null) {
     };
 }
 
-
 export async function validationDatasService(userDatabase: User | null, userData: UserDataReceived) {
     if (!userDatabase) {
         const messageError: MessageError = { message: "Email not found", status: 404 };
@@ -26,7 +25,6 @@ export async function validationDatasService(userDatabase: User | null, userData
         throw messageError
     }
 }
-
 
 export function validBearerIsInTheTokenService(token: string | undefined) {
     if (!token) {

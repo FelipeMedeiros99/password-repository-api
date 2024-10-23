@@ -5,3 +5,5 @@ export type UserDataReceived = Omit<User, "id"> & {
 }
 
 export type SaveToken = Omit<Token, "id" | "createdAt">
+
+export type PathName = "/crendentials" | "/securityNotes" | "/cards" | "/wifi"

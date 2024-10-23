@@ -7,8 +7,10 @@ import { SaveToken, UserDataReceived } from "../types/userTypes";
 import { Token, User } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import { MessageError } from "../types/errorTypes";
+import { DecryptedToken } from "../types/storeTypes";
 
 dotenv.config();
+
 
 async function createToken(userDatabase: User) {
     const payload = { id: userDatabase.id, email: userDatabase.email };
@@ -32,6 +34,17 @@ export async function encryptPasswordService(password: string) {
 
     return encryptedPassword;
 
+}
+
+export async function decryptToken(token: string):Promise<DecryptedToken>{
+    const JWT_KEY = process.env.JWT_KEY;
+    if (!JWT_KEY) {
+        const messageError: MessageError = { message: "invalid JWT_KEY", status: 500 }
+        throw messageError;
+    }   
+    const tokenWithoutBearer = token.replace("Bearer", "").trim();
+    const decryptedToken = jwt.verify(tokenWithoutBearer, JWT_KEY) as DecryptedToken;
+    return decryptedToken;
 }
 
 export async function registerUserService(userData: UserDataReceived) {
