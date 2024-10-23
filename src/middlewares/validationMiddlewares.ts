@@ -4,7 +4,7 @@ import { validBearerIsInTheTokenService, validTokenExistInDatabase } from "../se
 import { PathName } from "../types/userTypes";
 import { decryptToken } from "../services/userServices";
 import { DecryptedToken } from "../types/storeTypes";
-import { findIfTitleExists } from "../services/storeServices";
+import { validIfTitleExistsService } from "../services/storeServices";
 
 
 export function schemaValidation(schema: ObjectSchema) {
@@ -33,14 +33,18 @@ export async function validTokenMiddleware(req: Request, res: Response, next: Ne
 
 }
 
-export async function validTitleIsUnique(req: Request, res: Response, next: NextFunction) {
+export async function validTitleIsUniqueMiddleware(req: Request, res: Response, next: NextFunction) {
     const dataReceived = req.body;
     const { title } = dataReceived;
     const pathName = req.url as PathName;
     const authorization = req.headers?.authorization as string;
     const decryptedToken = await decryptToken(authorization)
 
-    await findIfTitleExists(pathName, decryptedToken, title)
+    try{
+        await validIfTitleExistsService(pathName, decryptedToken, title)
+        next()
+    }catch(e){
+        next(e)
+    }
 
-    next()
 }

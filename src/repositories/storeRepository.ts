@@ -1,7 +1,8 @@
 import { title } from "process";
 import prisma from "../config";
-import { DecryptedToken, EntityName } from "../types/storeTypes";
-import { PathName } from "../types/userTypes";
+import { CredentialReceived, DecryptedToken, EntityName, ReceivedDataStore } from "../types/storeTypes";
+import { PathName, UserDataReceived } from "../types/userTypes";
+import { encryptPasswordService } from "../services/userServices";
 
 export async function findTokenInDatabase(token: string) {
     const tokenWithoutBearer = token.replace("Bearer", "").trim()
@@ -24,4 +25,18 @@ export async function findIfTitleExistsRepository(decryptedToken: DecryptedToken
 
     return titleExists;
 
+}
+
+
+export async function saveStoreRepository(tokenData: DecryptedToken, url: PathName, receivedData: ReceivedDataStore) {
+    const entityName = url.replace("/", "") as EntityName;
+
+    if(receivedData.password){
+        const encryptedPassword = await encryptPasswordService(receivedData.password);
+        receivedData.password = encryptedPassword;
+    }
+
+    await (prisma[entityName] as any).create({
+        data: {...receivedData, userId: tokenData.id}
+    })
 }
