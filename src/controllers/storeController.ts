@@ -11,7 +11,7 @@ export async function createCredentialController(req: Request, res: Response, ne
 
     try {
         await saveStoreRepository(decryptedToken, url, receivedData)
-        res.sendStatus(201).send(receivedData);
+        res.send(receivedData).status(201);
     }catch(e){
         next(e)
     }

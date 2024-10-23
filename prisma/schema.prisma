@@ -43,7 +43,7 @@ model Credentials {
 
 model SecurityNotes {
   id      Int    @id @default(autoincrement())
-  title   Int    @unique
+  title   String @unique @db.VarChar(50)
   content String @db.VarChar(1000)
   userId  Int
 
@@ -88,12 +88,12 @@ model Wifi {
 }
 
 model Token {
-  id     Int    @id @default(autoincrement())
-  userId Int
-  token  String
-  createdAt DateTime @default(now())
-  expiration DateTime 
-  user   User   @relation(fields: [userId], references: [id])
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  token      String
+  createdAt  DateTime @default(now())
+  expiration DateTime
+  user       User     @relation(fields: [userId], references: [id])
 
   @@map("token")
 }

@@ -12,8 +12,8 @@ export async function findTokenInDatabase(token: string) {
 
 
 export async function findIfTitleExistsRepository(decryptedToken: DecryptedToken, pathName: PathName, title: string){
-    const {id} = decryptedToken;
 
+    const {id} = decryptedToken;
     const entityName = pathName.replace("/", "") as any;
 
     const titleExists = await (prisma[entityName] as any).findFirst({
@@ -31,7 +31,7 @@ export async function findIfTitleExistsRepository(decryptedToken: DecryptedToken
 export async function saveStoreRepository(tokenData: DecryptedToken, url: PathName, receivedData: ReceivedDataStore) {
     const entityName = url.replace("/", "") as EntityName;
 
-    if(receivedData.password){
+    if("password" in receivedData){
         const encryptedPassword = await encryptPasswordService(receivedData.password);
         receivedData.password = encryptedPassword;
     }

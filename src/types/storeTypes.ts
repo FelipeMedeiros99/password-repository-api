@@ -1,8 +1,10 @@
-import { Credentials } from "@prisma/client";
+import { Credentials, SecurityNotes } from "@prisma/client";
 
 export type CredentialReceived = Omit<Credentials, "id" | "userId">
 
-export type ReceivedDataStore = CredentialReceived 
+export type SecurityNotesReceived = Omit<SecurityNotes, "id" | "userId">
+
+export type ReceivedDataStore = CredentialReceived | SecurityNotesReceived
 
 export type DecryptedToken = {
     id: number;

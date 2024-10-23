@@ -39,7 +39,7 @@ export async function validTitleIsUniqueMiddleware(req: Request, res: Response, 
     const pathName = req.url as PathName;
     const authorization = req.headers?.authorization as string;
     const decryptedToken = await decryptToken(authorization)
-
+    
     try{
         await validIfTitleExistsService(pathName, decryptedToken, title)
         next()
