@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { createCredentialController } from "../controllers/storeController";
 import { schemaValidation, validTitleIsUniqueMiddleware, validTokenMiddleware } from "../middlewares/validationMiddlewares";
-import { registerCredentialSchema } from "../schemas/storeSchemas";
+import { registerCredentialSchema, registerSecurityNotesSchema } from "../schemas/storeSchemas";
 
 const storeRouter = Router();
 
@@ -9,5 +9,6 @@ const storeRouter = Router();
 
 
 storeRouter.post("/credentials", validTokenMiddleware, schemaValidation(registerCredentialSchema), validTitleIsUniqueMiddleware, createCredentialController)
+storeRouter.post("/securityNotes", validTokenMiddleware, schemaValidation(registerSecurityNotesSchema), validTitleIsUniqueMiddleware, createCredentialController)
 
 export default storeRouter;
