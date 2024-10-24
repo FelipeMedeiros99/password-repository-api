@@ -46,3 +46,16 @@ export async function validTokenExistInDatabase(token: string) {
 
 }
 
+export function validIfIdStoreIsValid(dataId: string | undefined){
+    if(Number.isNaN(Number(dataId)) && dataId !== undefined){
+        const message: MessageError={message: "id need be a number", status: 400}
+        throw message
+    }
+}
+
+export function validIfDataExists(data:any) {
+    if(!data){
+        const message: MessageError={message: "data not found", status: 404}
+        throw message
+    }
+}

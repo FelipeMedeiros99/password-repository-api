@@ -21,4 +21,10 @@ storeRouter.get("/cards", validTokenMiddleware, getAllDataController)
 storeRouter.get("/wifi", validTokenMiddleware, getAllDataController)
 
 
+storeRouter.get("/credentials/:id", validTokenMiddleware, getAllDataController)
+storeRouter.get("/securityNotes/:id", validTokenMiddleware, getAllDataController)
+storeRouter.get("/cards/:id", validTokenMiddleware, getAllDataController)
+storeRouter.get("/wifi/:id", validTokenMiddleware, getAllDataController)
+
+
 export default storeRouter;

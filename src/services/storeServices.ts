@@ -16,32 +16,42 @@ export async function validIfTitleExistsService(pathName: PathName, decryptedTok
     }
 }
 
-export function encryptPasswordStoreService(password: string){
+export function encryptPasswordStoreService(password: string) {
     const cryptrKey = process.env.CRYPTR_kEY as string;
     const cryptr = new Cryptr(cryptrKey)
-    const encryptedPassword =  cryptr.encrypt(password);
-   
-    return(encryptedPassword);
+    const encryptedPassword = cryptr.encrypt(password);
+
+    return (encryptedPassword);
 }
 
-export function decryptPasswordStoreService(password: string){ 
+export function decryptPasswordStoreService(password: string) {
     const cryptrKey = process.env.CRYPTR_kEY as string;
     const cryptr = new Cryptr(cryptrKey)
-    const decryptedPassword =  cryptr.decrypt(password);
+    const decryptedPassword = cryptr.decrypt(password);
     return decryptedPassword;
 }
 
+export function decryptArrayData(data: SavedData[] | SavedData) {
+    const dataIsArray = Array.isArray(data);
+    if (dataIsArray) {
+        const decryptedData = data.map((cryptedData) => {
+            if ("password" in cryptedData) {
+                cryptedData.password = decryptPasswordStoreService(cryptedData.password)
+            }
+            if ("cvv" in cryptedData) {
+                cryptedData.cvv = decryptPasswordStoreService(cryptedData.cvv)
+            }
+            return cryptedData
+        })
+        return decryptedData;
+    } else {
 
-export function decryptArrayData(data: SavedData[]) {
-    const decryptedData = data.map((cryptedData)=>{
-        if ("password" in cryptedData) {
-            cryptedData.password = decryptPasswordStoreService(cryptedData.password)
+        if ("password" in data) {
+            data.password = decryptPasswordStoreService(data.password)
         }
-        if("cvv" in cryptedData){
-            cryptedData.cvv = decryptPasswordStoreService(cryptedData.cvv)
+        if ("cvv" in data) {
+            data.cvv = decryptPasswordStoreService(data.cvv)
         }
-        return cryptedData
-    })
-
-    return decryptedData;
+        return data
+    }
 }
