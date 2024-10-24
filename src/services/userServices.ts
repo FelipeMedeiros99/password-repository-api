@@ -8,6 +8,7 @@ import { Token, User } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import { MessageError } from "../types/errorTypes";
 import { DecryptedToken } from "../types/storeTypes";
+import Cryptr from "cryptr";
 
 dotenv.config();
 
@@ -33,8 +34,23 @@ export async function encryptPasswordService(password: string) {
     const encryptedPassword = await bcrypt.hash(password, saltRounds);
 
     return encryptedPassword;
-
 }
+
+export async function encryptPasswordStoreService(password: string){
+    const cryptrKey = process.env.CRYPTR_KEY as string; 
+    const cryptr = new Cryptr(cryptrKey)
+    const encryptedPassword =  cryptr.encrypt(password);
+   
+    return(encryptedPassword);
+}
+
+export async function decryptPasswordStoreService(password: string){
+    const cryptrKey = process.env.CRYPTR_KEY as string; 
+    const cryptr = new Cryptr(cryptrKey)
+    const decryptedPassword =  cryptr.decrypt(password);
+    return decryptedPassword;
+}
+
 
 export async function decryptToken(token: string):Promise<DecryptedToken>{
     const JWT_KEY = process.env.JWT_KEY;

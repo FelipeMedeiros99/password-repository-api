@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { loginUserService, registerUserService } from "../services/userServices";
-import { UserDataReceived } from "../types/userTypes";
+import { decryptToken, loginUserService, registerUserService } from "../services/userServices";
+import { PathName, UserDataReceived } from "../types/userTypes";
+import { findAllDataRepository } from "../repositories/storeRepository";
+import { DecryptedToken } from "../types/storeTypes";
 
 export async function registerController(req: Request, res: Response, next: NextFunction) {
     const userData: UserDataReceived = req.body;
@@ -23,4 +25,15 @@ export async function loginController(req: Request, res: Response, next: NextFun
     } catch (e) {
         next(e)
     }
+}
+
+export async function getAllDataController(req: Request, res: Response, next: NextFunction) {
+    const url = req.url as PathName; 
+    const token = req.headers.authorization as string;
+    const decryptedToken = await decryptToken(token) as DecryptedToken
+
+    const data = await findAllDataRepository(decryptedToken, url)
+    
+
+    res.status(200).send(data);
 }

@@ -2,7 +2,7 @@ import { title } from "process";
 import prisma from "../config";
 import { CredentialReceived, DecryptedToken, EntityName, ReceivedDataStore } from "../types/storeTypes";
 import { PathName, UserDataReceived } from "../types/userTypes";
-import { encryptPasswordService } from "../services/userServices";
+import { encryptPasswordService, encryptPasswordStoreService } from "../services/userServices";
 
 export async function findTokenInDatabase(token: string) {
     const tokenWithoutBearer = token.replace("Bearer", "").trim()
@@ -32,16 +32,29 @@ export async function saveStoreRepository(tokenData: DecryptedToken, url: PathNa
     const entityName = url.replace("/", "") as EntityName;
 
     if("password" in receivedData){
-        const encryptedPassword = await encryptPasswordService(receivedData.password);
+        const encryptedPassword = await encryptPasswordStoreService(receivedData.password);
         receivedData.password = encryptedPassword;
     }
 
     if("cvv" in receivedData){
-        const cvv = await encryptPasswordService(receivedData.cvv);
+        const cvv = await encryptPasswordStoreService(receivedData.cvv);
         receivedData.cvv = cvv
     }
 
     await (prisma[entityName] as any).create({
         data: {...receivedData, userId: tokenData.id}
     })
+}
+
+export async function findAllDataRepository(decryptedToken: DecryptedToken, url: PathName) {
+    const entityName = url.replace("/", "") as EntityName;
+
+    const data = await (prisma[entityName] as any).findMany({
+        where: {
+            userId: decryptedToken.id
+        }
+    })
+
+    return data;
+
 }
