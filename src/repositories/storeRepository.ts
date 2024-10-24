@@ -2,7 +2,8 @@ import { title } from "process";
 import prisma from "../config";
 import { CredentialReceived, DecryptedToken, EntityName, ReceivedDataStore } from "../types/storeTypes";
 import { PathName, UserDataReceived } from "../types/userTypes";
-import { encryptPasswordService, encryptPasswordStoreService } from "../services/userServices";
+import { encryptPasswordStoreService } from "../services/storeServices";
+
 
 export async function findTokenInDatabase(token: string) {
     const tokenWithoutBearer = token.replace("Bearer", "").trim()
@@ -10,10 +11,9 @@ export async function findTokenInDatabase(token: string) {
     return tokenData;
 }
 
+export async function findIfTitleExistsRepository(decryptedToken: DecryptedToken, pathName: PathName, title: string) {
 
-export async function findIfTitleExistsRepository(decryptedToken: DecryptedToken, pathName: PathName, title: string){
-
-    const {id} = decryptedToken;
+    const { id } = decryptedToken;
     const entityName = pathName.replace("/", "") as any;
 
     const titleExists = await (prisma[entityName] as any).findFirst({
@@ -21,28 +21,27 @@ export async function findIfTitleExistsRepository(decryptedToken: DecryptedToken
             userId: id,
             title
         }
-    }) 
+    })
 
     return titleExists;
 
 }
 
-
 export async function saveStoreRepository(tokenData: DecryptedToken, url: PathName, receivedData: ReceivedDataStore) {
     const entityName = url.replace("/", "") as EntityName;
 
-    if("password" in receivedData){
+    if ("password" in receivedData) {
         const encryptedPassword = await encryptPasswordStoreService(receivedData.password);
         receivedData.password = encryptedPassword;
     }
 
-    if("cvv" in receivedData){
+    if ("cvv" in receivedData) {
         const cvv = await encryptPasswordStoreService(receivedData.cvv);
         receivedData.cvv = cvv
     }
 
     await (prisma[entityName] as any).create({
-        data: {...receivedData, userId: tokenData.id}
+        data: { ...receivedData, userId: tokenData.id }
     })
 }
 
