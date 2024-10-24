@@ -36,6 +36,11 @@ export async function saveStoreRepository(tokenData: DecryptedToken, url: PathNa
         receivedData.password = encryptedPassword;
     }
 
+    if("cvv" in receivedData){
+        const cvv = await encryptPasswordService(receivedData.cvv);
+        receivedData.cvv = cvv
+    }
+
     await (prisma[entityName] as any).create({
         data: {...receivedData, userId: tokenData.id}
     })
