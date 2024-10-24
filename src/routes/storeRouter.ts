@@ -15,10 +15,10 @@ storeRouter.post("/cards", validTokenMiddleware, schemaValidation(registerCardsS
 storeRouter.post("/wifi", validTokenMiddleware, schemaValidation(registerWifiSchema), validTitleIsUniqueMiddleware, createCredentialController)
 
 
-// storeRouter.get("/credentials", validTokenMiddleware, getAllDataController)
-// storeRouter.get("/securityNotes", validTokenMiddleware, )
-// storeRouter.get("/cards", validTokenMiddleware, )
-// storeRouter.get("/wifi", validTokenMiddleware, )
+storeRouter.get("/credentials", validTokenMiddleware, getAllDataController)
+storeRouter.get("/securityNotes", validTokenMiddleware, getAllDataController)
+storeRouter.get("/cards", validTokenMiddleware, getAllDataController)
+storeRouter.get("/wifi", validTokenMiddleware, getAllDataController)
 
 
 export default storeRouter;

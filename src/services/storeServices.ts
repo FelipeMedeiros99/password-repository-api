@@ -1,6 +1,6 @@
 import { findIfTitleExistsRepository, saveStoreRepository } from "../repositories/storeRepository";
 import { MessageError } from "../types/errorTypes";
-import { CredentialReceived, DecryptedToken, EntityName } from "../types/storeTypes";
+import { CredentialReceived, DecryptedToken, EntityName, SavedData } from "../types/storeTypes";
 import { PathName } from "../types/userTypes";
 import dotenv from "dotenv";
 import Cryptr from "cryptr";
@@ -16,7 +16,7 @@ export async function validIfTitleExistsService(pathName: PathName, decryptedTok
     }
 }
 
-export async function encryptPasswordStoreService(password: string){
+export function encryptPasswordStoreService(password: string){
     const cryptrKey = process.env.CRYPTR_kEY as string;
     const cryptr = new Cryptr(cryptrKey)
     const encryptedPassword =  cryptr.encrypt(password);
@@ -24,9 +24,24 @@ export async function encryptPasswordStoreService(password: string){
     return(encryptedPassword);
 }
 
-export async function decryptPasswordStoreService(password: string){
-    const cryptrKey = process.env.CRYPTR_KEY as string; 
+export function decryptPasswordStoreService(password: string){ 
+    const cryptrKey = process.env.CRYPTR_kEY as string;
     const cryptr = new Cryptr(cryptrKey)
     const decryptedPassword =  cryptr.decrypt(password);
     return decryptedPassword;
+}
+
+
+export function decryptArrayData(data: SavedData[]) {
+    const decryptedData = data.map((cryptedData)=>{
+        if ("password" in cryptedData) {
+            cryptedData.password = decryptPasswordStoreService(cryptedData.password)
+        }
+        if("cvv" in cryptedData){
+            cryptedData.cvv = decryptPasswordStoreService(cryptedData.cvv)
+        }
+        return cryptedData
+    })
+
+    return decryptedData;
 }

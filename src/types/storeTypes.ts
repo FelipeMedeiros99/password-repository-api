@@ -17,3 +17,5 @@ export type DecryptedToken = {
 }
 
 export type EntityName = "cards" | "credentials" | "securityNotes" | "wifi"
+
+export type SavedData = Wifi | Cards | Credentials | SecurityNotes
