@@ -47,7 +47,7 @@ export async function saveStoreRepository(tokenData: DecryptedToken, url: PathNa
 
 export async function findAllDataRepository(decryptedToken: DecryptedToken, url: PathName, dataId: string | undefined = undefined) {
     let entityName = url.replace("/", "") as EntityName;
-
+    console.log(entityName)
     if (dataId) {
         entityName = entityName.split("/")[0].trim() as EntityName
 
@@ -70,16 +70,27 @@ export async function findAllDataRepository(decryptedToken: DecryptedToken, url:
 
 }
 
-export async function findOneDataRepository(decryptedToken: DecryptedToken, url: PathName, dataId: string) {
-    const entityName = url.replace("/", "") as EntityName;
+export async function deleteDataRepository(decryptedToken: DecryptedToken, url: PathName, dataId: string) {
+    const entityName = url.replace("/", "").split('/')[0] as EntityName;
+    console.log(entityName)
 
-    const data = await (prisma[entityName] as any).findMany({
+    const data = await prisma.credentials.delete({
         where: {
             userId: decryptedToken.id,
             id: Number(dataId)
         }
     })
+    console.log(data)
 
+
+    // const data = await (prisma[entityName] as any).deleteMany({
+    //     where: {
+    //         userId: decryptedToken.id,
+    //         id: Number(dataId)
+    //     }
+    // })
+
+    console.log(data)
     return data;
 
 }

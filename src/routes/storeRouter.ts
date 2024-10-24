@@ -2,7 +2,7 @@ import { Router } from "express";
 import { createCredentialController } from "../controllers/storeController";
 import { schemaValidation, validTitleIsUniqueMiddleware, validTokenMiddleware } from "../middlewares/validationMiddlewares";
 import { registerCardsSchema, registerCredentialSchema, registerSecurityNotesSchema, registerWifiSchema } from "../schemas/storeSchemas";
-import { getAllDataController } from "../controllers/userController";
+import { deleteDataController, getAllDataController } from "../controllers/userController";
 
 const storeRouter = Router();
 
@@ -25,6 +25,12 @@ storeRouter.get("/credentials/:id", validTokenMiddleware, getAllDataController)
 storeRouter.get("/securityNotes/:id", validTokenMiddleware, getAllDataController)
 storeRouter.get("/cards/:id", validTokenMiddleware, getAllDataController)
 storeRouter.get("/wifi/:id", validTokenMiddleware, getAllDataController)
+
+
+storeRouter.delete("/credentials/:id", validTokenMiddleware, deleteDataController)
+storeRouter.delete("/securityNotes/:id", validTokenMiddleware, deleteDataController)
+storeRouter.delete("/cards/:id", validTokenMiddleware, deleteDataController)
+storeRouter.delete("/wifi/:id", validTokenMiddleware, deleteDataController)
 
 
 export default storeRouter;
